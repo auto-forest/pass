@@ -85,7 +85,7 @@
             padding: 30px;
             border-radius: 20px;
             border: 1px solid rgba(255, 215, 0, 0.2);
-            max-width: 500px;
+            max-width: 550px;
             margin: 0 auto;
         }
 
@@ -99,7 +99,8 @@
         }
 
         .form-group input,
-        .form-group select {
+        .form-group select,
+        .form-group textarea {
             width: 100%;
             padding: 12px 20px;
             background: rgba(255, 255, 255, 0.1);
@@ -111,12 +112,19 @@
             font-family: inherit;
         }
 
-        .form-group input::placeholder {
+        .form-group textarea {
+            border-radius: 15px;
+            resize: vertical;
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
             color: #b0b0b0;
         }
 
         .form-group input:focus,
-        .form-group select:focus {
+        .form-group select:focus,
+        .form-group textarea:focus {
             outline: none;
             border-color: #FFD700;
             background: rgba(255, 255, 255, 0.15);
@@ -192,6 +200,34 @@
             .form-row {
                 grid-template-columns: 1fr;
             }
+        }
+
+        /* 성공 메시지 스타일 */
+        .success-message {
+            display: none;
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: 600;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success-message.show {
+            display: block;
         }
 
         /* 문제 공감 섹션 */
@@ -483,24 +519,6 @@
                 font-size: 0.9rem;
             }
             
-            .cta-buttons {
-                flex-direction: column;
-                width: 100%;
-                max-width: 300px;
-                margin: 0 auto;
-            }
-            
-            .cta-button, .secondary-button {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .hero-features {
-                flex-direction: column;
-                gap: 15px;
-                align-items: center;
-            }
-            
             .section-title {
                 font-size: 1.6rem;
             }
@@ -519,7 +537,7 @@
             <p class="hero-subtitle">더 이상 거절당하지 마세요</p>
             <p class="hero-description">일반 심사에서는 보지 못하는 당신의 경제력, 우리는 다르게 평가합니다</p>
             
-            <form class="consultation-form" onsubmit="handleSubmit(event)">
+            <form class="consultation-form" id="consultationForm" onsubmit="handleSubmit(event)">
                 <div class="form-grid">
                     <div class="form-row">
                         <div class="form-group">
@@ -532,24 +550,49 @@
                     
                     <div class="form-row">
                         <div class="form-group">
-                            <select id="car-type" name="car-type" required>
-                                <option value="">희망 차종</option>
-                                <option value="sedan">세단</option>
-                                <option value="suv">SUV</option>
-                                <option value="coupe">쿠페</option>
-                                <option value="luxury">럭셔리</option>
-                                <option value="etc">기타</option>
+                            <select id="car-condition" name="car-condition" required>
+                                <option value="">신차/중고차</option>
+                                <option value="new">신차</option>
+                                <option value="used">중고차</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <select id="budget" name="budget" required>
-                                <option value="">예산 범위</option>
-                                <option value="3000-5000">3천~5천만원</option>
-                                <option value="5000-7000">5천~7천만원</option>
-                                <option value="7000-10000">7천만원~1억</option>
-                                <option value="10000+">1억원 이상</option>
-                            </select>
+                            <input type="text" id="car-model" name="car-model" placeholder="희망 차량 (예: 벤츠 E클래스)" required>
                         </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <select id="current-status" name="current-status" required>
+                            <option value="">현재 상황</option>
+                            <option value="individual-business">개인사업자</option>
+                            <option value="corporate-business">법인사업자</option>
+                            <option value="employee">직장인(4대보험가입)</option>
+                            <option value="no-income-proof">소득증빙X(프리랜서, 무직, 주부, 기타 등)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <select id="consultation-time" name="consultation-time" required>
+                            <option value="">상담 가능한 시간</option>
+                            <option value="morning">오전(9시~12시)</option>
+                            <option value="afternoon">오후(13시~17시)</option>
+                            <option value="text-first">문자먼저보내주세요</option>
+                            <option value="anytime">언제든지 가능</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <select id="budget" name="budget" required>
+                            <option value="">예산 범위</option>
+                            <option value="3000-5000">3천~5천만원</option>
+                            <option value="5000-7000">5천~7천만원</option>
+                            <option value="7000-10000">7천만원~1억</option>
+                            <option value="10000+">1억원 이상</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <textarea id="inquiry" name="inquiry" placeholder="문의사항 (선택사항)" rows="3"></textarea>
                     </div>
                     
                     <div class="form-group">
@@ -559,9 +602,13 @@
                         </label>
                     </div>
                     
-                    <button type="submit" class="submit-button">
+                    <button type="submit" class="submit-button" id="submitBtn">
                         무료 상담 신청하기
                     </button>
+                    
+                    <div class="success-message" id="successMessage">
+                        ✅ 상담 신청이 완료되었습니다! 곧 연락드리겠습니다.
+                    </div>
                 </div>
             </form>
         </div>
@@ -678,6 +725,9 @@
     </div>
 
     <script>
+        // Google Apps Script Web App URL (배포 후 여기에 URL 입력)
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyXDoix2AyYMgrqgsPIL0bmMWCMRAlypKoWetxakoE-TDCvdpcXUdOShQ1XC-LtYQ7C/exec';
+
         // 스크롤 애니메이션
         const observerOptions = {
             threshold: 0.1,
@@ -710,20 +760,85 @@
         }
 
         // 폼 제출 처리
-        function handleSubmit(e) {
+        async function handleSubmit(e) {
             e.preventDefault();
-            const button = e.target.querySelector('.submit-button');
-            button.disabled = true;
-            button.innerHTML = '제출 중...';
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const successMessage = document.getElementById('successMessage');
+            const form = document.getElementById('consultationForm');
+            
+            // 버튼 비활성화 및 로딩 상태 표시
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '제출 중...';
 
-            // 실제 구현시에는 여기서 서버로 데이터 전송
-            setTimeout(() => {
-                button.disabled = false;
-                button.innerHTML = '무료 상담 신청하기';
-                alert('상담 신청이 완료되었습니다!\n곧 전문 컨설턴트가 연락드리겠습니다.');
-                e.target.reset();
-            }, 2000);
+            // 폼 데이터 수집
+            const formData = {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                carCondition: document.getElementById('car-condition').value,
+                carModel: document.getElementById('car-model').value,
+                currentStatus: document.getElementById('current-status').value,
+                consultationTime: document.getElementById('consultation-time').value,
+                budget: document.getElementById('budget').value,
+                inquiry: document.getElementById('inquiry').value || ''
+            };
+
+            console.log('상담 신청 데이터:', formData);
+
+            try {
+                // 구글 시트로 데이터 전송
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', // CORS 우회
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                // 성공 처리
+                submitBtn.innerHTML = '✅ 제출 완료!';
+                successMessage.classList.add('show');
+                
+                // 3초 후 폼 초기화
+                setTimeout(() => {
+                    form.reset();
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '무료 상담 신청하기';
+                    successMessage.classList.remove('show');
+                }, 3000);
+                
+                // 구글 태그 매니저 이벤트 전송 (선택사항)
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'form_submit', {
+                        'event_category': 'consultation',
+                        'event_label': 'car_purchase_consultation'
+                    });
+                }
+                
+                // 페이스북 픽셀 이벤트 (선택사항)
+                if (typeof fbq !== 'undefined') {
+                    fbq('track', 'Lead');
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '무료 상담 신청하기';
+                alert('일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+            }
         }
+
+        // 전화번호 자동 포맷팅
+        document.getElementById('phone').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/[^0-9]/g, '');
+            if (value.length > 3 && value.length <= 7) {
+                value = value.slice(0, 3) + '-' + value.slice(3);
+            } else if (value.length > 7) {
+                value = value.slice(0, 3) + '-' + value.slice(3, 7) + '-' + value.slice(7, 11);
+            }
+            e.target.value = value;
+        });
 
         // 스무스 스크롤
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
